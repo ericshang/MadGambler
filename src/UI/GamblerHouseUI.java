@@ -6,6 +6,9 @@
 package UI;
 
 import java.util.Random;
+import java.util.Timer;
+import madgambler.Player;
+import madgambler.counterTask;
 
 /**
  *
@@ -18,6 +21,23 @@ public class GamblerHouseUI extends javax.swing.JFrame {
      */
     public GamblerHouseUI() {
         initComponents();
+        setNumOfBeans(3);
+        jLabel22.setText("");
+        jLabel23.setText("");
+        btnAcceptResult.setVisible(false);//hide the accept button
+        playerSelf = new Player(4);// the id
+        player1 = new Player(1);
+        player2 = new Player(2);
+        player3 = new Player(3);
+        
+        displayPlayerSelf();
+        displayPlayer1();
+        displayPlayer2();
+        displayPlayer3();
+        //house roll number
+        houseRollNum = rollDice();
+        //display house number
+        lblHouseRolledNum.setText(houseRollNum +"");
     }
 
     /**
@@ -30,12 +50,12 @@ public class GamblerHouseUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel17 = new javax.swing.JLabel();
+        lblTopMsg = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
+        lblRoundNum = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnReady = new javax.swing.JButton();
+        btnQuit = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -58,12 +78,14 @@ public class GamblerHouseUI extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnRoll = new javax.swing.JButton();
+        btnUseBean = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
+        lblHouseRolledNum = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        btnAcceptResult = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(1024, 768));
@@ -71,14 +93,14 @@ public class GamblerHouseUI extends javax.swing.JFrame {
 
         jPanel1.setPreferredSize(new java.awt.Dimension(514, 39));
 
-        jLabel17.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel17.setText("Player 1 has got a Big Yum!");
-        jLabel17.setToolTipText("");
+        lblTopMsg.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblTopMsg.setText("Player 1 has got a Big Yum!");
+        lblTopMsg.setToolTipText("");
 
         jLabel18.setText("Round:");
 
-        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel19.setText("3");
+        lblRoundNum.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblRoundNum.setText("3");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -88,38 +110,38 @@ public class GamblerHouseUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(123, 123, 123)
-                        .addComponent(jLabel17)
+                        .addComponent(lblTopMsg)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel18))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel19)))
+                        .addComponent(lblRoundNum)))
                 .addGap(46, 46, 46))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel17)
+                    .addComponent(lblTopMsg)
                     .addComponent(jLabel18))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel19)
+                .addComponent(lblRoundNum)
                 .addContainerGap())
         );
 
         jPanel2.setPreferredSize(new java.awt.Dimension(121, 52));
 
-        jButton1.setText("I'm Ready!");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnReady.setText("I'm Ready!");
+        btnReady.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnReadyActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Quit");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnQuit.setText("Quit");
+        btnQuit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnQuitActionPerformed(evt);
             }
         });
 
@@ -127,17 +149,17 @@ public class GamblerHouseUI extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnQuit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                .addComponent(btnReady, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jButton1)
+                .addComponent(btnReady)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(btnQuit)
                 .addContainerGap())
         );
 
@@ -150,8 +172,6 @@ public class GamblerHouseUI extends javax.swing.JFrame {
         jLabel2.setText("Total Points: 12");
 
         jLabel3.setText("Beans Left: 3");
-
-        jLabel4.setText("Rolling: 6");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -190,8 +210,6 @@ public class GamblerHouseUI extends javax.swing.JFrame {
 
         jLabel15.setText("Beans Left: 3");
 
-        jLabel16.setText("Rolling: 1");
-
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -226,8 +244,6 @@ public class GamblerHouseUI extends javax.swing.JFrame {
 
         jLabel11.setText("Beans Left: 5");
 
-        jLabel12.setText("Rolling: 5");
-
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -261,8 +277,6 @@ public class GamblerHouseUI extends javax.swing.JFrame {
         jLabel6.setText("Total Points: 12");
 
         jLabel7.setText("Beans Left: 3");
-
-        jLabel8.setText("Rolling: 2");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -318,26 +332,38 @@ public class GamblerHouseUI extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
-        jButton5.setText("Roll Dice");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnRoll.setText("Roll Dice");
+        btnRoll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnRollActionPerformed(evt);
             }
         });
 
-        jButton6.setText("Use Beans");
+        btnUseBean.setText("Use Beans");
+        btnUseBean.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUseBeanActionPerformed(evt);
+            }
+        });
 
         jLabel20.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel20.setText("The House Rolled:");
 
-        jLabel21.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel21.setText("6");
+        lblHouseRolledNum.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        lblHouseRolledNum.setText("6");
 
         jLabel22.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel22.setText("You are rolling");
 
         jLabel23.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel23.setText("6");
+
+        btnAcceptResult.setText("Accept Result?");
+        btnAcceptResult.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAcceptResultActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -346,20 +372,26 @@ public class GamblerHouseUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel23))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel22))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel25)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAcceptResult))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addComponent(jButton5)
+                        .addComponent(btnRoll)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton6)
+                        .addComponent(btnUseBean)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel20)
-                            .addComponent(jLabel21))))
+                            .addComponent(lblHouseRolledNum)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel22)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel23)
+                                .addGap(8, 8, 8)))))
                 .addGap(37, 37, 37))
         );
         jPanel4Layout.setVerticalGroup(
@@ -367,15 +399,20 @@ public class GamblerHouseUI extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6)
+                    .addComponent(btnRoll)
+                    .addComponent(btnUseBean)
                     .addComponent(jLabel20))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel21)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 199, Short.MAX_VALUE)
-                .addComponent(jLabel22)
-                .addGap(5, 5, 5)
-                .addComponent(jLabel23)
+                .addComponent(lblHouseRolledNum)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 183, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel22)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel23)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAcceptResult)))
                 .addContainerGap())
         );
 
@@ -409,24 +446,76 @@ public class GamblerHouseUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitActionPerformed
         // TODO add your handling code here:
-        jLabel17.setText("User quit!");
-    }//GEN-LAST:event_jButton2ActionPerformed
+        lblTopMsg.setText("User quit!");
+    }//GEN-LAST:event_btnQuitActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnReadyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadyActionPerformed
         // TODO add your handling code here:
-        jLabel17.setText("Game Started!");
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        lblTopMsg.setText("Game Started!");
+        //do count down
+        startCountdown();
+    }//GEN-LAST:event_btnReadyActionPerformed
+    //rolling dice
+    private void btnRollActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRollActionPerformed
         // TODO add your handling code here:
-        Random r = new Random();
-        int randint = r.nextInt(6)+1;
+        userRolledNum = rollDice(); // the current num of dice that user rolled
         jLabel22.setText("You Rolled:");
-        jLabel23.setText(Integer.toString(randint));
-    }//GEN-LAST:event_jButton5ActionPerformed
+        jLabel23.setText(Integer.toString(userRolledNum));
+        btnRoll.setEnabled(false);
+        btnAcceptResult.setVisible(true);
+        if(userRolledNum == houseRollNum){//user got a big YUM
+            lblTopMsg.setText("You got a big Yum!");
+        }
+        if(userRolledNum == houseRollNum && isBigYumLastRoll == true){
+            lblTopMsg.setText("You got a big Yum again! now you got a big Dumb!");
+            playerSelf.setTotalPoints(0);
+            //set accept button disabled
+            btnAcceptResult.setEnabled(false);
+        }
+    }//GEN-LAST:event_btnRollActionPerformed
+    //use beans
+    private void btnUseBeanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUseBeanActionPerformed
+        // TODO add your handling code here:
+        if(playerSelf.getNumOfBeans()>0){
+            btnRoll.setEnabled(true);
+            playerSelf.setNumOfBeans(playerSelf.getNumOfBeans() - 1);
+            displayPlayerSelf();//print out player info
+        }else{
+            btnUseBean.setEnabled(false);
+        }
+    }//GEN-LAST:event_btnUseBeanActionPerformed
 
+    //to accept the dice roll result
+    private void btnAcceptResultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptResultActionPerformed
+        // TODO add your handling code here:
+        //add points to the current user
+        if(userRolledNum == houseRollNum && isBigYumLastRoll ==false ){//user got a big YUM
+            playerSelf.setTotalPoints(playerSelf.getTotalPoints()+userRolledNum *2);
+        }else{
+            playerSelf.setTotalPoints(playerSelf.getTotalPoints()+userRolledNum);
+        }
+        displayPlayerSelf();//print out player info
+        //disable rolling button
+        btnRoll.setEnabled(false);
+        //disable usebean button
+        btnUseBean.setEnabled(false);
+        //set the accept button disabled
+        btnAcceptResult.setEnabled(false);
+        
+        
+    }//GEN-LAST:event_btnAcceptResultActionPerformed
+
+    private void startCountdown(){
+        timer = new Timer();
+        task = new counterTask(jLabel25);
+        timer.schedule(task,1000,1000);
+    }
+    private void stopCountdown(){
+        timer = null;
+        task = null;
+    }
     /**
      * @param args the command line arguments
      */
@@ -466,10 +555,11 @@ public class GamblerHouseUI extends javax.swing.JFrame {
 */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton btnAcceptResult;
+    private javax.swing.JButton btnQuit;
+    private javax.swing.JButton btnReady;
+    private javax.swing.JButton btnRoll;
+    private javax.swing.JButton btnUseBean;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -478,14 +568,12 @@ public class GamblerHouseUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -501,5 +589,54 @@ public class GamblerHouseUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JLabel lblHouseRolledNum;
+    private javax.swing.JLabel lblRoundNum;
+    private javax.swing.JLabel lblTopMsg;
     // End of variables declaration//GEN-END:variables
+    Timer timer;
+    counterTask task;
+    private int numOfBeans;
+    int userRolledNum;//the number user rolled
+    Player playerSelf, player1, player2, player3;
+    private int houseRollNum;//the number house rolled
+    private boolean isBigYumLastRoll = false;
+    
+    //getters
+    public int getNumOfBeans(){
+        return numOfBeans;
+    }
+    public void setNumOfBeans(int i){
+        this.numOfBeans = i;
+    }
+    
+    private void displayPlayerSelf(){
+        jLabel14.setText("Total Points: "+ playerSelf.getTotalPoints());
+        jLabel15.setText("Beans Left: "+ playerSelf.getNumOfBeans());
+        //jLabel16.setText("Rolling"); 
+    }
+    
+    private void displayPlayer1(){
+        jLabel2.setText("Total Points: "+ player1.getTotalPoints());
+        jLabel3.setText("Beans Left: "+ player1.getNumOfBeans());
+        //jLabel4.setText("Rolling"); 
+    }
+    
+    private void displayPlayer2(){
+        jLabel6.setText("Total Points: "+ player2.getTotalPoints());
+        jLabel7.setText("Beans Left: "+ player2.getNumOfBeans());
+        //jLabel8.setText("Rolling"); 
+    }
+    private void displayPlayer3(){
+        jLabel10.setText("Total Points: "+ player3.getTotalPoints());
+        jLabel11.setText("Beans Left: "+ player3.getNumOfBeans());
+        //jLabel12.setText("Rolling"); 
+    }
+    private int rollDice(){
+        int numRolled =0; // the current num of dice that user rolled
+        Random r = new Random();
+        numRolled = r.nextInt(6)+1;
+        return numRolled;
+    }
+    
+    
 }

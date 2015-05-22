@@ -38,7 +38,8 @@ public class MadGambler {
         }
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
-                new GamblerHouseUI().setVisible(true);
+                GamblerHouseUI UI = new GamblerHouseUI();
+                UI.setVisible(true);
             }
         });
     }
